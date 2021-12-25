@@ -2,8 +2,8 @@ import cv2
 import image_processing
 import numpy as np
 
-MURAL_WIDTH = 120#120 #CM
-MURAL_HEIGHT = 80#80 # CM
+MURAL_WIDTH = 180#120 #CM
+MURAL_HEIGHT = 90#80 # CM
 PPI = 300 #PIXELS PER INCH
 IMAGE_SIZE_CM = 2.5 #CM
 
@@ -15,6 +15,8 @@ IMAGE_SIZE_PX = int(IMAGE_SIZE_CM * PPCM) # IMAGE HEIGHT IN (PX)
 MURAL_WIDTH_PX = MURAL_WIDTH * PPCM
 MURAL_HEIGHT_PX = MURAL_HEIGHT * PPCM
 
+REUSE_IMAGES = False
+
 
 print("PPCM", PPCM)
 print("IMAGE SIZE", IMAGE_SIZE_PX)
@@ -25,7 +27,7 @@ print("NUMBER OF IMAGES HIGH", N_IMAGES_HEIGHT)
 print("TOTAL NUMBER OF IMAGES NEEDED", N_IMAGES_WIDTH * N_IMAGES_HEIGHT)
 
 
-image = cv2.imread("main.jpeg")
+image = cv2.imread("Main2.jpg")
 img_height, img_width, img_channels = image.shape
 new_height = int((img_height / MURAL_HEIGHT)) * MURAL_HEIGHT
 new_width = int((img_width / MURAL_WIDTH)) * MURAL_WIDTH
@@ -42,35 +44,35 @@ image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 blank_image = np.zeros((MURAL_HEIGHT_PX, MURAL_WIDTH_PX, 3), np.uint8)
 
-def best_image(pixel_color, b_list):
+def best_image(pixel_color, image_list):
 
     smallest_difference = 256
     best_image = None
 
-    for index, i in enumerate(b_list):
+    for index, i in enumerate(image_list):
 
-        if abs(pixel_color - i[1]) < smallest_difference:
+            if abs(pixel_color - i[1]) < smallest_difference:
 
-            smallest_difference = abs(pixel_color - i[1])
+                smallest_difference = abs(pixel_color - i[1])
 
-            best_image = i[0]
+                best_image = i[0]
 
-            best_image_index = index
+                best_image_index = index
 
     image = cv2.imread("images/" + best_image)
-
-    return image, best_image, smallest_difference
+    return image, best_image, smallest_difference, best_image_index
 
 print("Creating mural")
+
+original_image_list = image_processing.brightness_to_list("images")
+image_list = image_processing.brightness_to_list("images")
 
 for y in range(N_IMAGES_HEIGHT):
     for x in range(N_IMAGES_WIDTH):
 
         pixel_color = image[y][x]
 
-        b_list = image_processing.brightness_to_list("images")
-
-        pixel_image, pixel_image_name, difference = best_image(pixel_color, b_list)
+        pixel_image, pixel_image_name, difference, index = best_image(pixel_color, image_list)
 
         pos_x = x * IMAGE_SIZE_PX
         pos_y = y * IMAGE_SIZE_PX
@@ -87,7 +89,23 @@ for y in range(N_IMAGES_HEIGHT):
             print(x * IMAGE_SIZE_PX, x * IMAGE_SIZE_PX + IMAGE_SIZE_PX)
             print(y * IMAGE_SIZE_PX, y * IMAGE_SIZE_PX + IMAGE_SIZE_PX)
 
+        if REUSE_IMAGES == False:
+            image_list.pop(index)
+
+            if len(image_list) < 50:
+                print("Refilled image list")
+                image_list = [i for i in original_image_list]
+
     print("Finished row number", y, "out of", N_IMAGES_HEIGHT)
 
 
-cv2.imwrite("mural.jpg", blank_image)
+# cv2.imwrite("mural.jpg", blank_image)
+
+#TOP LEFT
+cv2.imwrite("TOP_LEFT.jpg", blank_image[0:int(MURAL_HEIGHT_PX/2), 0:int(MURAL_WIDTH_PX/2)])
+#TOP RIGHT
+cv2.imwrite("TOP_RIGHT.jpg", blank_image[0:int(MURAL_HEIGHT_PX/2), int(MURAL_WIDTH_PX/2): MURAL_WIDTH_PX])
+#BOTTOM LEFT
+cv2.imwrite("BOTTOM_LEFT.jpg", blank_image[int(MURAL_HEIGHT_PX/2):MURAL_HEIGHT_PX, 0:int(MURAL_WIDTH_PX/2)])
+#BOTTOM RIGHT
+cv2.imwrite("BOTTOM_RIGHT.jpg", blank_image[int(MURAL_HEIGHT_PX/2):MURAL_HEIGHT_PX, int(MURAL_WIDTH_PX/2):MURAL_WIDTH_PX])
