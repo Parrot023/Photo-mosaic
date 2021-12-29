@@ -16,12 +16,26 @@ N_IMAGES_HIGH = int(MURAL_HEIGHT / IMAGE_SIZE_CM) # NUMBER OF IMAGES HIGH
 IMAGE_SIZE_PX = int(IMAGE_SIZE_CM * PPCM) # IMAGE HEIGHT AND WIDTH IN (PX)
 MURAL_WIDTH_PX = MURAL_WIDTH * PPCM # MURAL WIDTH IN PIXELS
 MURAL_HEIGHT_PX = MURAL_HEIGHT * PPCM # MURAL HEIGHT IN PIXELS
+
+TILE_WIDTH = 20 # CM
+TILE_HEIGHT = 20 # CM
+TILE_WIDTH_PX = TILE_WIDTH * PPCM
+TILE_HEIGHT_PX = TILE_HEIGHT * PPCM
 # -------------------------------------------------------------------
 
 # Determines whether or not to use the same image multiple times in a row
 REUSE_IMAGES = False
 # Determines how many images are left before allowing previously used images
 REUSE_IMAGES_MIN_IMAGES = 100
+
+if MURAL_WIDTH % TILE_WIDTH != 0 or MURAL_HEIGHT % TILE_HEIGHT != 0:
+
+    print("""You mural width does not divide into your tile width
+    or you mural height does not divide into you tile height""")
+    print("TILE_WIDTH:", TILE_WIDTH)
+    print("TILE_HEIGHT:", TILE_HEIGHT )
+
+    exit()
 
 # MURAL INFO ---------------------------------------------------------
 print("PPCM", PPCM)
@@ -30,6 +44,8 @@ print("MURAL WIDTH (PX)", MURAL_WIDTH_PX)
 print("MURAL HEIGHT (PX)", MURAL_HEIGHT_PX)
 print("NUMBER OF IMAGES WIDE", N_IMAGES_WIDE)
 print("NUMBER OF IMAGES HIGH", N_IMAGES_HIGH)
+print("TILE_WIDTH:", TILE_WIDTH)
+print("TILE_HEIGHT:", TILE_HEIGHT )
 print("TOTAL NUMBER OF IMAGES NEEDED", N_IMAGES_WIDE * N_IMAGES_HIGH)
 # ---------------------------------------------------------------------
 
@@ -126,11 +142,8 @@ for y in range(N_IMAGES_HIGH):
 
 # cv2.imwrite("mural.jpg", mural_image)
 
-#TOP LEFT
-cv2.imwrite("TOP_LEFT.jpg", mural_image[0:int(MURAL_HEIGHT_PX/2), 0 : int(MURAL_WIDTH_PX/2)])
-#TOP RIGHT
-cv2.imwrite("TOP_RIGHT.jpg", mural_image[0:int(MURAL_HEIGHT_PX/2), int(MURAL_WIDTH_PX/2) : MURAL_WIDTH_PX])
-#BOTTOM LEFT
-cv2.imwrite("BOTTOM_LEFT.jpg", mural_image[int(MURAL_HEIGHT_PX/2) : MURAL_HEIGHT_PX, 0:int(MURAL_WIDTH_PX/2)])
-#BOTTOM RIGHT
-cv2.imwrite("BOTTOM_RIGHT.jpg", mural_image[int(MURAL_HEIGHT_PX/2) : MURAL_HEIGHT_PX, int(MURAL_WIDTH_PX/2):MURAL_WIDTH_PX])
+# Saving the image in smaller parts as the full image is way to big
+for i in range(int(MURAL_HEIGHT / TILE_HEIGHT)):
+    for j in range(int(MURAL_WIDTH / TILE_WIDTH)):
+        # Each part of th image is saved with a name in the format XY.jpg
+        cv2.imwrite("{}{}.jpg".format(j,i), mural_image[i * TILE_HEIGHT_PX: i * TILE_HEIGHT_PX + TILE_HEIGHT_PX, j * TILE_WIDTH_PX : j * TILE_WIDTH_PX + TILE_WIDTH_PX])
