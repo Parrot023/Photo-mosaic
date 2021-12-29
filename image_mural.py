@@ -38,15 +38,14 @@ if MURAL_WIDTH % TILE_WIDTH != 0 or MURAL_HEIGHT % TILE_HEIGHT != 0:
     exit()
 
 # MURAL INFO ---------------------------------------------------------
-print("PPCM", PPCM)
-print("IMAGE SIZE", IMAGE_SIZE_PX)
-print("MURAL WIDTH (PX)", MURAL_WIDTH_PX)
-print("MURAL HEIGHT (PX)", MURAL_HEIGHT_PX)
-print("NUMBER OF IMAGES WIDE", N_IMAGES_WIDE)
-print("NUMBER OF IMAGES HIGH", N_IMAGES_HIGH)
-print("TILE_WIDTH:", TILE_WIDTH)
-print("TILE_HEIGHT:", TILE_HEIGHT )
-print("TOTAL NUMBER OF IMAGES NEEDED", N_IMAGES_WIDE * N_IMAGES_HIGH)
+print("MURAL DIMENSIONS")
+print("Pixels per cm", PPCM)
+print("Building images height and width in pixels", IMAGE_SIZE_PX)
+print("Mural width in pixels", MURAL_WIDTH_PX)
+print("Mural height in pixels", MURAL_HEIGHT_PX)
+print("Number of images wide", N_IMAGES_WIDE)
+print("Number of images high", N_IMAGES_HIGH)
+print("Total numer of images needed", N_IMAGES_WIDE * N_IMAGES_HIGH)
 # ---------------------------------------------------------------------
 
 # Letting the user exit after seing the mural dimensions
