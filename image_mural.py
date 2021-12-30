@@ -3,13 +3,24 @@ import image_processing
 import numpy as np
 
 
-# MURAL DIMENSION ------------------------------------------------
-MURAL_WIDTH = 20 # CM
-MURAL_HEIGHT = 20 # CM
+# MURAL PARAMETERS ------------------------------------------------
+MURAL_WIDTH = 200 # CM
+MURAL_HEIGHT = 90 # CM
 PPI = 300 # PIXELS PER INCH
 IMAGE_SIZE_CM = 2.5 # CM
 
 PPCM = int(PPI / 2.54) #PIXEL PER CM
+TILE_WIDTH = 20 # CM
+TILE_HEIGHT = 30 # CM
+
+BASE_IMAGE_PATH = "Main2.jpg"
+BUILD_IMAGES_DIR_PATH = "images"
+
+# Determines whether or not to use the same image multiple times in a row
+REUSE_IMAGES = False
+# Determines how many images are left before allowing previously used images
+REUSE_IMAGES_MIN_IMAGES = 100
+
 N_IMAGES_WIDE = int(MURAL_WIDTH / IMAGE_SIZE_CM) # NUMBER OF IMAGES WIDE
 N_IMAGES_HIGH = int(MURAL_HEIGHT / IMAGE_SIZE_CM) # NUMBER OF IMAGES HIGH
 
@@ -17,16 +28,10 @@ IMAGE_SIZE_PX = int(IMAGE_SIZE_CM * PPCM) # IMAGE HEIGHT AND WIDTH IN (PX)
 MURAL_WIDTH_PX = MURAL_WIDTH * PPCM # MURAL WIDTH IN PIXELS
 MURAL_HEIGHT_PX = MURAL_HEIGHT * PPCM # MURAL HEIGHT IN PIXELS
 
-TILE_WIDTH = 20 # CM
-TILE_HEIGHT = 20 # CM
 TILE_WIDTH_PX = TILE_WIDTH * PPCM
 TILE_HEIGHT_PX = TILE_HEIGHT * PPCM
 # -------------------------------------------------------------------
 
-# Determines whether or not to use the same image multiple times in a row
-REUSE_IMAGES = False
-# Determines how many images are left before allowing previously used images
-REUSE_IMAGES_MIN_IMAGES = 100
 
 if MURAL_WIDTH % TILE_WIDTH != 0 or MURAL_HEIGHT % TILE_HEIGHT != 0:
 
@@ -46,6 +51,7 @@ print("Mural height in pixels", MURAL_HEIGHT_PX)
 print("Number of images wide", N_IMAGES_WIDE)
 print("Number of images high", N_IMAGES_HIGH)
 print("Total numer of images needed", N_IMAGES_WIDE * N_IMAGES_HIGH)
+print("NOTICE!!: All your base images will be cropped and resized to match the size mentioned above. This cannot be undone. Please backup all off your build images!")
 # ---------------------------------------------------------------------
 
 # Letting the user exit after seing the mural dimensions
@@ -54,20 +60,21 @@ if input("Do you want to continue (y/n): ") != "y":
     exit()
 
 # Loading mural base image
-image = cv2.imread("Main2.jpg")
+image = cv2.imread(BASE_IMAGE_PATH)
 img_height, img_width, img_channels = image.shape
 
 # Letting the user exit before resizing their base image
 if not img_height/img_width == N_IMAGES_HIGH/N_IMAGES_WIDE:
 
-    message = """You mural base image does not have the same aspect ratio as your mural
-    your images will be resized to match your mural. This may result in the image looking stretched. Continue? (y/n)"""
+    message = "You mural base image does not have the same aspect ratio as your mural your images will be resized to match your mural. This may result in the image looking stretched. Continue? (y/n)"
 
     if input(message) != "y":
         exit()
 
-# image_processing.image_cropping("images")
-# image_processing.image_rescaling(IMAGE_SIZE_PX, IMAGE_SIZE_PX, "images")
+# Using the function image_cropping from image_processing.py to make every image square
+image_processing.image_cropping("images")
+# Using the function image_rescaling from image_processing.py to make every image the size that was just defined
+image_processing.image_rescaling(IMAGE_SIZE_PX, IMAGE_SIZE_PX, "images")
 
 # Resizing and converting base image to Grayscale
 image = cv2.resize(image, (N_IMAGES_WIDE, N_IMAGES_HIGH))
@@ -100,8 +107,8 @@ def best_image(pixel_color, image_list):
 
 print("Creating mural")
 
-original_image_list = image_processing.brightness_to_list("images")
-image_list = image_processing.brightness_to_list("images")
+original_image_list = image_processing.brightness_to_list(BUILD_IMAGES_DIR_PATH)
+image_list = image_processing.brightness_to_list(BUILD_IMAGES_DIR_PATH)
 
 # Looping through every pixel in the base_image
 for y in range(N_IMAGES_HIGH):
