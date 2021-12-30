@@ -2,40 +2,18 @@ import os
 import cv2
 import numpy as np
 
+# Path to the directory of the build images
 dir = "images"
 
+# Getting a list of all files in dir
 files = os.listdir(dir)
 
 try:
+    # Making a directory for all the files that can not be used
     os.mkdir(dir + "/wrong_file_format")
 except FileExistsError:
-    print("the folder: ", dir + "/wrong_file_format", "does already exist")
-
-def image_renaming(dir):
-
-    files = os.listdir(dir)
-
-    try:
-        os.mkdir(dir + "/wrong_file_format")
-    except FileExistsError:
-        print("the folder: ", dir + "/wrong_file_format", "does already exist")
-
-    #renames every file and moves those that aren't jpeg or jpg
-    for i in range(len(files)):
-
-        filename, type = os.path.splitext(files[i])
-
-        print(type)
-
-        if type == ".jpeg" or type == ".jpg" or type == ".png":
-            os.rename(dir + "/" + filename + type, dir + "/" + str(i) + type)
-
-        elif not os.path.isdir(dir + "/" + filename + type):
-            os.rename(dir + "/" + filename + type, dir + "/wrong_file_format" + "/" + filename + type)
-
-    print("All filenames were changed to match future functions")
-
-#image_renaming(dir)
+    # If the script have been run before the folder will already exist
+    print("The folder: ", dir + "/wrong_file_format", "does already exist")
 
 def image_cropping(dir):
 
