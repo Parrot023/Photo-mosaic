@@ -15,11 +15,15 @@ except FileExistsError:
     # If the script have been run before the folder will already exist
     print("The folder: ", dir + "/wrong_file_format", "does already exist")
 
+
 def image_cropping(dir):
 
-    files = os.listdir(dir)
+    """
+    Funtion to crop every image in the directory. So that they are square
+    """
 
-    print(files)
+    # Getting a new list of files as some of the other functions might have moved or changed some files
+    files = os.listdir(dir)
 
     for i in range(len(files)):
 
@@ -28,7 +32,7 @@ def image_cropping(dir):
         if type == ".jpeg" or type == ".jpg" or type == ".png":
 
             try:
-                print(files[i])
+                # Loading the image
                 image = cv2.imread(dir + "/" + files[i])
                 height, width, channels = image.shape
 
@@ -40,7 +44,7 @@ def image_cropping(dir):
                     cropped_image = image[0:height, 0:height]
 
                     cv2.imwrite(dir + "/" + files[i], cropped_image)
-                    print("Saving image", files[i])
+                    print("Cropped image:", files[i])
 
 
                 elif width < height:
@@ -49,14 +53,15 @@ def image_cropping(dir):
                     cropped_image = image[0:width, 0:width]
 
                     cv2.imwrite(dir + "/" + files[i], cropped_image)
-                    print("Saving image", files[i])
+                    print("Cropped image:", files[i])
 
 
                 else:
                     print("Image already square:", files[i])
 
             except:
-                print("Moved one weird image")
+                # If for some reason something goes wrong the file is moved to dir + "/wrong_file_format"
+                print("Moved a weird image:", files[i])
                 os.rename(dir + "/" + filename + type, dir + "/wrong_file_format" + "/" + filename + type)
 
 
@@ -66,6 +71,13 @@ def image_cropping(dir):
 
 def image_rescaling(width, height, dir):
 
+    """
+    Function to rescale every image.
+    This makes it easier for image_mural.py to load them
+    during the creation of the mural
+    """
+
+    # Getting a new list of files as some of the other functions might have moved or changed some files
     files = os.listdir(dir)
 
     for i in range(len(files)):
@@ -74,15 +86,18 @@ def image_rescaling(width, height, dir):
 
         if type == ".jpeg" or type == ".jpg" or type == ".png":
 
+            # Loading the image
             image = cv2.imread(dir + "/" + files[i])
             h, w, channels = image.shape
 
+            # If it does already have the right dimension it wont be resized
             if not height == h and not width == w:
 
                 dim = (width, height)
 
                 resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
 
+                # Saving the image
                 cv2.imwrite(dir + "/" + files[i], resized)
 
     print("All images were resized")
@@ -91,8 +106,13 @@ def image_rescaling(width, height, dir):
 
 def brightness_to_list(dir):
 
+    """
+    Function to return a list of all the images and their average brightness
+    """
+
     brigness_values = []
 
+    # Getting a new list of files as some of the other functions might have moved or changed some files
     files = os.listdir(dir)
 
     for i in range(len(files)):
@@ -101,12 +121,13 @@ def brightness_to_list(dir):
 
         if type == ".jpeg" or type == ".jpg" or type == ".png":
 
+            # Turning it into a greyscale image is we only care about the brightness value
             image = cv2.cvtColor(cv2.imread(dir + "/" + files[i]), cv2.COLOR_BGR2GRAY)
-            # print(int(filename))
+
+            # Appending the filename and brigness values to the list
             brigness_values.append([files[i], np.average(image)])
 
-            # print(np.average(image), filename)
-
+    # Returning the final list
     return brigness_values
 
 # b = brightness_to_list(dir)
