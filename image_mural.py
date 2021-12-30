@@ -15,6 +15,7 @@ TILE_HEIGHT = 30 # CM
 
 BASE_IMAGE_PATH = "Main2.jpg"
 BUILD_IMAGES_DIR_PATH = "images"
+OUTPUT_DIR = "output"
 
 # Determines whether or not to use the same image multiple times in a row
 REUSE_IMAGES = False
@@ -145,11 +146,13 @@ for y in range(N_IMAGES_HIGH):
 
     print("Finished row number", y, "out of", N_IMAGES_HIGH - 1)
 
-
-# cv2.imwrite("mural.jpg", mural_image)
+try:
+    os.mkdir("OUTPUT_DIR")
+except FileExistsError:
+    print("Output directory does already exist :-)")
 
 # Saving the image in smaller parts as the full image is way to big
 for i in range(int(MURAL_HEIGHT / TILE_HEIGHT)):
     for j in range(int(MURAL_WIDTH / TILE_WIDTH)):
         # Each part of th image is saved with a name in the format XY.jpg
-        cv2.imwrite("{}{}.jpg".format(j,i), mural_image[i * TILE_HEIGHT_PX: i * TILE_HEIGHT_PX + TILE_HEIGHT_PX, j * TILE_WIDTH_PX : j * TILE_WIDTH_PX + TILE_WIDTH_PX])
+        cv2.imwrite(OUTPUT_DIR + "/{}{}.jpg".format(j,i), mural_image[i * TILE_HEIGHT_PX: i * TILE_HEIGHT_PX + TILE_HEIGHT_PX, j * TILE_WIDTH_PX : j * TILE_WIDTH_PX + TILE_WIDTH_PX])
