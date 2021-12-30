@@ -1,6 +1,7 @@
 import cv2
 import image_processing
 import numpy as np
+import os
 
 
 # MURAL PARAMETERS ------------------------------------------------
@@ -147,7 +148,7 @@ for y in range(N_IMAGES_HIGH):
     print("Finished row number", y, "out of", N_IMAGES_HIGH - 1)
 
 try:
-    os.mkdir("OUTPUT_DIR")
+    os.mkdir(OUTPUT_DIR)
 except FileExistsError:
     print("Output directory does already exist :-)")
 
