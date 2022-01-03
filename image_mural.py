@@ -5,16 +5,16 @@ import os
 
 
 # MURAL PARAMETERS ------------------------------------------------
-MURAL_WIDTH = 200 # CM
+MURAL_WIDTH = 180 # CM
 MURAL_HEIGHT = 90 # CM
 PPI = 300 # PIXELS PER INCH
-IMAGE_SIZE_CM = 2.5 # CM
+IMAGE_SIZE_CM = 2 # CM
 
 PPCM = int(PPI / 2.54) #PIXEL PER CM
-TILE_WIDTH = 20 # CM
-TILE_HEIGHT = 30 # CM
+TILE_WIDTH = 90 # CM
+TILE_HEIGHT = 90 # CM
 
-BASE_IMAGE_PATH = "Main2.jpg"
+BASE_IMAGE_PATH = "main.jpeg"
 BUILD_IMAGES_DIR_PATH = "images"
 OUTPUT_DIR = "output"
 
