@@ -12,7 +12,7 @@ Now would be a good time to find the base image to your mosaic. First crop the i
 
 Now change the parameters in image_mural.py to match the mosaic you would like to create
 
-To create the mosaic run image_mural.py after changing the parameters
+To create the mosaic run photo_mosaic.py after changing the parameters
 
 You will find the output of the tool in the directory named output
 
