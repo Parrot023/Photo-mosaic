@@ -74,7 +74,7 @@ def image_rescaling(width, height, dir):
     """
     Function to rescale every image.
     This makes it easier for image_mural.py to load them
-    during the creation of the mural
+    during the creation of the mosaic
     """
 
     # Getting a new list of files as some of the other functions might have moved or changed some files
