@@ -23,6 +23,13 @@ REUSE_IMAGES = False
 # Determines how many images are left before allowing previously used images
 REUSE_IMAGES_MIN_IMAGES = 100
 
+# Determines whether or not the best image shoud be tinted towards the original pixel color
+# This can give the mosaic a better look
+CORRECT_COLORS = True
+# Determines how much the image will be tinted
+# More than 0.05 will tint the image quite a lot
+CORRECTION_PECENTAGE = 0.05
+
 N_IMAGES_WIDE = int(MOSAIC_WIDTH / IMAGE_SIZE_CM) # NUMBER OF IMAGES WIDE
 N_IMAGES_HIGH = int(MOSAIC_HEIGHT / IMAGE_SIZE_CM) # NUMBER OF IMAGES HIGH
 
@@ -119,6 +126,10 @@ for y in range(N_IMAGES_HIGH):
         pixel_color = image[y][x]
 
         pixel_image, pixel_image_name, difference, index = best_image(pixel_color, image_list)
+
+        # Corrects the color of the image by overlaying the pixel color
+        if CORRECT_COLORS:
+            pixel_image = image_processing.image_color_correction(pixel_image, pixel_color, PERCENTAGE)
 
         # The mosaic is IMAGE_SIZE_PX bigger than the base image
         # As the base image have been resized to N_IMAGES_WIDE x N_IMAGES_HIGH

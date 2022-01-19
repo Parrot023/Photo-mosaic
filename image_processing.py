@@ -131,3 +131,13 @@ def brightness_to_list(dir):
     return brigness_values
 
 # b = brightness_to_list(dir)
+
+def image_color_correction(image, pixel_color, percentage):
+
+    shape = image.shape
+
+    overlay = np.zeros(shape, np.uint8)
+
+    overlay[:] = pixel_color
+
+    return cv2.addWeighted(image, 1, overlay, percentage, 0)
