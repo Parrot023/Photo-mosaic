@@ -6,7 +6,7 @@ import os
 
 # MOSAIC PARAMETERS ------------------------------------------------
 MOSAIC_WIDTH = 180 # CM
-MOSAIC_HEIGHT = 90 # CM
+MOSAIC_HEIGHT = 180 # CM
 PPI = 300 # PIXELS PER INCH
 IMAGE_SIZE_CM = 2 # CM
 
@@ -21,7 +21,7 @@ OUTPUT_DIR = "output"
 # Determines whether or not to use the same image multiple times in a row
 REUSE_IMAGES = False
 # Determines how many images are left before allowing previously used images
-REUSE_IMAGES_MIN_IMAGES = 100
+REUSE_IMAGES_MIN_IMAGES = 200
 
 # Determines whether or not the best image shoud be tinted towards the original pixel color
 # This can give the mosaic a better look
@@ -87,24 +87,35 @@ image_processing.image_rescaling(IMAGE_SIZE_PX, IMAGE_SIZE_PX, "images")
 
 # Resizing and converting base image to Grayscale
 image = cv2.resize(image, (N_IMAGES_WIDE, N_IMAGES_HIGH))
-image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 # Blank image for the mosaic
 mural_image = np.zeros((MOSAIC_HEIGHT_PX, MOSAIC_WIDTH_PX, 3), np.uint8)
 
 def best_image(pixel_color, image_list):
 
-    smallest_difference = 256
+    smallest_difference = 256**256
     best_image_name = None
 
     for index, i in enumerate(image_list):
 
             # If the differance between this image average color and the pixel
             # is lower than the smallest difference this is the new best image
-            if abs(pixel_color - i[1]) < smallest_difference:
+
+            total_diff = 0
+
+            B_diff = abs(pixel_color[0] - i[1][0])**2
+            G_diff = abs(pixel_color[1] - i[1][1])**2
+            R_diff = abs(pixel_color[2] - i[1][2])**2
+
+            total_diff = B_diff + G_diff + R_diff
+
+            # if abs(pixel_color - i[1]) < smallest_difference:
+            if total_diff < smallest_difference:
 
                 # Index 1 is the average color of the image
-                smallest_difference = abs(pixel_color - i[1])
+                # smallest_difference = abs(pixel_color - i[1])
+                smallest_difference = total_diff
 
                 # Index 0 is the filename
                 best_image_name = i[0]
@@ -129,7 +140,7 @@ for y in range(N_IMAGES_HIGH):
 
         # Corrects the color of the image by overlaying the pixel color
         if CORRECT_COLORS:
-            pixel_image = image_processing.image_color_correction(pixel_image, pixel_color, PERCENTAGE)
+            pixel_image = image_processing.image_color_correction(pixel_image, pixel_color, CORRECTION_PECENTAGE)
 
         # The mosaic is IMAGE_SIZE_PX bigger than the base image
         # As the base image have been resized to N_IMAGES_WIDE x N_IMAGES_HIGH

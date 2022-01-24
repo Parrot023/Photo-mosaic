@@ -122,10 +122,14 @@ def brightness_to_list(dir):
         if type == ".jpeg" or type == ".jpg" or type == ".png":
 
             # Turning it into a greyscale image is we only care about the brightness value
-            image = cv2.cvtColor(cv2.imread(dir + "/" + files[i]), cv2.COLOR_BGR2GRAY)
+            # image = cv2.cvtColorcv2.imread(dir + "/" + files[i]), cv2.COLOR_BGR2GRAY)
+
+            image = cv2.imread(dir + "/" + files[i])
+
 
             # Appending the filename and brigness values to the list
-            brigness_values.append([files[i], np.average(image)])
+            # brigness_values.append([files[i], np.average(image)])
+            brigness_values.append([files[i], np.average(np.average(image, axis = 0), axis = 0)])
 
     # Returning the final list
     return brigness_values
